@@ -1,0 +1,3 @@
+{
+  "/api/rooms/[code]/restart/route": "app/api/rooms/[code]/restart/route.js"
+}

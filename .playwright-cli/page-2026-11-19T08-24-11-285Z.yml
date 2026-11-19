@@ -1,0 +1,194 @@
+- generic [active] [ref=f1e1]:
+  - alert [ref=f1e244]
+  - banner [ref=f1e245]:
+    - generic [ref=f1e246]:
+      - link "STOCK LAB" [ref=f1e247] [cursor=pointer]:
+        - /url: /
+        - text: STOCK
+        - generic [ref=f1e250]: LAB
+      - generic [ref=f1e251]: DDY3VC
+      - button "Matikan suara" [ref=f1e252] [cursor=pointer]
+      - button "Kembali ke beranda" [ref=f1e256] [cursor=pointer]
+  - main [ref=f1e259]:
+    - generic [ref=f1e260]:
+      - generic [ref=f1e261]:
+        - generic "Ronde 1 dari 6" [ref=f1e262]:
+          - generic [ref=f1e263]: "1"
+          - generic [ref=f1e264]: "2"
+          - generic [ref=f1e265]: "3"
+          - generic [ref=f1e266]: "4"
+          - generic [ref=f1e267]: "5"
+          - generic [ref=f1e268]: "6"
+        - generic [ref=f1e269]: Bidding
+        - generic [ref=f1e270]: 52 kartu di deck
+        - button "Lewati Giliran" [ref=f1e753] [cursor=pointer]
+      - generic [ref=f1e274]:
+        - generic [ref=f1e275]:
+          - generic [ref=f1e277]:
+            - generic [ref=f1e278]:
+              - generic [ref=f1e313]:
+                - generic [ref=f1e314]:
+                  - generic "Urutan jalan" [ref=f1e315]: "1"
+                  - generic [ref=f1e316]: Bot Smart 2
+                  - generic [ref=f1e323]: "??"
+                - generic [ref=f1e328]: … belum bid
+              - generic [ref=f1e279]:
+                - generic [ref=f1e280]:
+                  - generic "Urutan jalan" [ref=f1e281]: "2"
+                  - generic [ref=f1e282]: Bot Smart 3
+                  - generic [ref=f1e289]: "??"
+                - generic [ref=f1e294]: … belum bid
+              - generic [ref=f1e296]:
+                - generic [ref=f1e297]:
+                  - generic "Urutan jalan" [ref=f1e298]: "4"
+                  - generic [ref=f1e299]: Bot Smart 1
+                  - generic [ref=f1e306]: "??"
+                - generic [ref=f1e311]: … belum bid
+            - generic [ref=f1e330]:
+              - generic [ref=f1e405]:
+                - generic [ref=f1e406]: Keuangan
+                - generic [ref=f1e409]:
+                  - generic [ref=f1e759]: "5"
+                  - generic [ref=f1e760]: "3"
+                - generic [ref=f1e413]:
+                  - generic [ref=f1e414]: "0"
+                  - generic [ref=f1e415]: "5"
+                  - generic [ref=f1e416]: "10"
+                - generic [ref=f1e417]:
+                  - generic [ref=f1e418]: 6 kartu
+                  - generic [ref=f1e423]: tumpukanekonomi
+              - generic [ref=f1e352]:
+                - generic [ref=f1e353]: Agrikultur
+                - generic [ref=f1e356]:
+                  - generic [ref=f1e766]: "5"
+                  - generic [ref=f1e767]: "1"
+                - generic [ref=f1e360]:
+                  - generic [ref=f1e361]: "0"
+                  - generic [ref=f1e362]: "5"
+                  - generic [ref=f1e363]: "10"
+                - generic [ref=f1e364]:
+                  - generic [ref=f1e365]: 6 kartu
+                  - generic [ref=f1e370]: tumpukanekonomi
+              - generic [ref=f1e371]:
+                - generic [ref=f1e372]: Reksa Dana
+                - generic [ref=f1e376]:
+                  - generic [ref=f1e773]: "5"
+                  - generic [ref=f1e774]: "3"
+                - generic [ref=f1e380]:
+                  - generic [ref=f1e381]: "0"
+                  - generic [ref=f1e382]: "5"
+                  - generic [ref=f1e383]: "10"
+                - generic [ref=f1e384]: harga = floor((S2 + S3) ÷ 2)tanpa kartu ekonomi
+              - generic [ref=f1e331]:
+                - generic [ref=f1e332]: Konsumer
+                - generic [ref=f1e337]: "5"
+                - generic [ref=f1e341]:
+                  - generic [ref=f1e342]: "0"
+                  - generic [ref=f1e343]: "5"
+                  - generic [ref=f1e344]: "10"
+                - generic [ref=f1e345]:
+                  - generic [ref=f1e346]: 6 kartu
+                  - generic [ref=f1e351]: tumpukanekonomi
+              - generic [ref=f1e386]:
+                - generic [ref=f1e387]: Tambang
+                - generic [ref=f1e390]:
+                  - generic [ref=f1e781]: "5"
+                  - generic [ref=f1e782]: "5"
+                - generic [ref=f1e394]:
+                  - generic [ref=f1e395]: "0"
+                  - generic [ref=f1e396]: "5"
+                  - generic [ref=f1e397]: "10"
+                - generic [ref=f1e398]:
+                  - generic [ref=f1e399]: 6 kartu
+                  - generic [ref=f1e404]: tumpukanekonomi
+            - generic [ref=f1e788]:
+              - generic [ref=f1e789]:
+                - generic [ref=f1e790]: 52 deck
+                - generic [ref=f1e795]: Deck aksi
+              - generic [ref=f1e796]:
+                - generic [ref=f1e797]: Kartu terbuka — 8 lembar
+                - button "52 52 Keuangan Saham Polos gratis" [disabled] [ref=f1e798] [cursor=pointer]:
+                  - generic [ref=f1e799]: "52"
+                  - generic [ref=f1e802]: "52"
+                  - generic [ref=f1e805]: Keuangan
+                  - generic [ref=f1e811]: Saham Polos
+                  - generic [ref=f1e812]: gratis
+                - button "35 35 Konsumer Quick Buy gratis" [disabled] [ref=f1e816] [cursor=pointer]:
+                  - generic [ref=f1e817]: "35"
+                  - generic [ref=f1e822]: "35"
+                  - generic [ref=f1e827]: Konsumer
+                  - generic [ref=f1e837]: Quick Buy
+                  - generic [ref=f1e838]: gratis
+                - button "70 70 Agrikultur Rumor gratis" [disabled] [ref=f1e842] [cursor=pointer]:
+                  - generic [ref=f1e843]: "70"
+                  - generic [ref=f1e846]: "70"
+                  - generic [ref=f1e849]: Agrikultur
+                  - generic [ref=f1e855]: Rumor
+                  - generic [ref=f1e856]: gratis
+                - button "89 89 Reksa Dana Saham Polos gratis" [disabled] [ref=f1e860] [cursor=pointer]:
+                  - generic [ref=f1e861]: "89"
+                  - generic [ref=f1e865]: "89"
+                  - generic [ref=f1e869]: Reksa Dana
+                  - generic [ref=f1e877]: Saham Polos
+                  - generic [ref=f1e878]: gratis
+                - button "74 74 Tambang Saham Polos gratis" [disabled] [ref=f1e882] [cursor=pointer]:
+                  - generic [ref=f1e883]: "74"
+                  - generic [ref=f1e886]: "74"
+                  - generic [ref=f1e889]: Tambang
+                  - generic [ref=f1e895]: Saham Polos
+                  - generic [ref=f1e896]: gratis
+                - button "40 40 Konsumer Info Bursa fee 1" [disabled] [ref=f1e900] [cursor=pointer]:
+                  - generic [ref=f1e901]: "40"
+                  - generic [ref=f1e906]: "40"
+                  - generic [ref=f1e911]: Konsumer
+                  - generic [ref=f1e921]: Info Bursa
+                  - generic [ref=f1e922]: fee 1
+                - button "85 85 Reksa Dana Info Bursa gratis" [disabled] [ref=f1e926] [cursor=pointer]:
+                  - generic [ref=f1e927]: "85"
+                  - generic [ref=f1e931]: "85"
+                  - generic [ref=f1e935]: Reksa Dana
+                  - generic [ref=f1e943]: Info Bursa
+                  - generic [ref=f1e944]: gratis
+                - button "79 79 Tambang Quick Buy fee 2" [disabled] [ref=f1e948] [cursor=pointer]:
+                  - generic [ref=f1e949]: "79"
+                  - generic [ref=f1e952]: "79"
+                  - generic [ref=f1e955]: Tambang
+                  - generic [ref=f1e961]: Quick Buy
+                  - generic [ref=f1e962]: fee 2
+            - generic [ref=f1e598]:
+              - generic [ref=f1e599]:
+                - generic "Nomor urutan jalanmu" [ref=f1e600]:
+                  - generic [ref=f1e601]: "3"
+                  - generic [ref=f1e602]: URUTAN
+                - generic [ref=f1e603]:
+                  - generic [ref=f1e604]: Trader
+                  - generic [ref=f1e605]: "15"
+              - generic [ref=f1e611]: Tanganmu kosong — ambil kartu terbuka sebagai aset untuk dijual nanti.
+          - generic [ref=f1e967]:
+            - generic [ref=f1e968]: Fase Bidding — pasang bid tertutup
+            - paragraph [ref=f1e972]: Bid tertinggi dapat urutan jalan 1. Bid dibayar ke bank. Seri dimenangkan nomor urutan lama yang lebih kecil.
+            - generic [ref=f1e973]:
+              - button "Kurangi bid" [ref=f1e974] [cursor=pointer]
+              - slider "Jumlah bid" [ref=f1e976]: "1"
+              - button "Tambah bid" [ref=f1e977] [cursor=pointer]
+              - generic [ref=f1e980]: "1"
+            - generic [ref=f1e981]:
+              - generic [ref=f1e982]:
+                - button "0" [ref=f1e983] [cursor=pointer]
+                - button "1" [ref=f1e984] [cursor=pointer]
+                - button "2" [ref=f1e985] [cursor=pointer]
+                - button "3" [ref=f1e986] [cursor=pointer]
+                - button "5" [ref=f1e987] [cursor=pointer]
+              - generic [ref=f1e988]: 15 koin
+              - button "Pasang Bid 1" [ref=f1e992] [cursor=pointer]
+        - complementary [ref=f1e640]:
+          - generic [ref=f1e641]:
+            - text: Catatan Bursa
+            - generic "Ronde 1 dari 6" [ref=f1e642]:
+              - generic [ref=f1e643]: "1"
+              - generic [ref=f1e644]: "2"
+              - generic [ref=f1e645]: "3"
+              - generic [ref=f1e646]: "4"
+              - generic [ref=f1e647]: "5"
+              - generic [ref=f1e648]: "6"
+            - generic [ref=f1e649]: "Ronde 1: 8 kartu aksi dibuka"

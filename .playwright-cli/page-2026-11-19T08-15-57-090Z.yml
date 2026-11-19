@@ -1,0 +1,207 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "STOCK LAB" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - text: STOCK
+        - generic [ref=e7]: LAB
+      - link "Cara Main" [ref=e8] [cursor=pointer]:
+        - /url: "#cara-main"
+      - button "Matikan suara" [ref=e9] [cursor=pointer]
+  - generic [ref=e14]:
+    - generic [ref=e15]:
+      - generic [ref=e16]: KONSUMER
+      - generic [ref=e17]: "5"
+      - generic [ref=e18]: ▲ 1
+    - generic [ref=e19]:
+      - generic [ref=e20]: KEUANGAN
+      - generic [ref=e21]: "5"
+      - generic [ref=e22]: ▼ 1
+    - generic [ref=e23]:
+      - generic [ref=e24]: AGRIKULTUR
+      - generic [ref=e25]: "5"
+      - generic [ref=e26]: • 0
+    - generic [ref=e27]:
+      - generic [ref=e28]: TAMBANG
+      - generic [ref=e29]: "5"
+      - generic [ref=e30]: • 0
+    - generic [ref=e31]:
+      - generic [ref=e32]: KONSUMER
+      - generic [ref=e33]: "5"
+      - generic [ref=e34]: ▲ 1
+    - generic [ref=e35]:
+      - generic [ref=e36]: KEUANGAN
+      - generic [ref=e37]: "5"
+      - generic [ref=e38]: ▼ 1
+    - generic [ref=e39]:
+      - generic [ref=e40]: AGRIKULTUR
+      - generic [ref=e41]: "5"
+      - generic [ref=e42]: • 0
+    - generic [ref=e43]:
+      - generic [ref=e44]: TAMBANG
+      - generic [ref=e45]: "5"
+      - generic [ref=e46]: • 0
+    - generic [ref=e47]:
+      - generic [ref=e48]: KONSUMER
+      - generic [ref=e49]: "5"
+      - generic [ref=e50]: ▲ 1
+    - generic [ref=e51]:
+      - generic [ref=e52]: KEUANGAN
+      - generic [ref=e53]: "5"
+      - generic [ref=e54]: ▼ 1
+    - generic [ref=e55]:
+      - generic [ref=e56]: AGRIKULTUR
+      - generic [ref=e57]: "5"
+      - generic [ref=e58]: • 0
+    - generic [ref=e59]:
+      - generic [ref=e60]: TAMBANG
+      - generic [ref=e61]: "5"
+      - generic [ref=e62]: • 0
+    - generic [ref=e63]:
+      - generic [ref=e64]: KONSUMER
+      - generic [ref=e65]: "5"
+      - generic [ref=e66]: ▲ 1
+    - generic [ref=e67]:
+      - generic [ref=e68]: KEUANGAN
+      - generic [ref=e69]: "5"
+      - generic [ref=e70]: ▼ 1
+    - generic [ref=e71]:
+      - generic [ref=e72]: AGRIKULTUR
+      - generic [ref=e73]: "5"
+      - generic [ref=e74]: • 0
+    - generic [ref=e75]:
+      - generic [ref=e76]: TAMBANG
+      - generic [ref=e77]: "5"
+      - generic [ref=e78]: • 0
+  - main [ref=e79]:
+    - generic [ref=e80]:
+      - generic [ref=e81]:
+        - generic [ref=e82]: Meja kartu pasar saham · 3–5 pemain
+        - heading "STOCKLAB" [level=1] [ref=e83]
+        - paragraph [ref=e84]: Bid urutan jalan, draft kartu saham, mainkan efeknya, lalu jual di harga puncak. Enam ronde, kartu ekonomi mengocok pasar tiap putaran. Koin terbanyak setelah likuidasi menang — utang memotong skormu.
+        - generic [ref=e85]:
+          - generic [ref=e86]:
+            - generic [ref=e87]: "6"
+            - generic [ref=e88]: Ronde
+          - generic [ref=e89]:
+            - generic [ref=e90]: "60"
+            - generic [ref=e91]: Kartu aksi
+          - generic [ref=e92]:
+            - generic [ref=e93]: 4+1
+            - generic [ref=e94]: Sektor & reksa dana
+          - generic [ref=e95]:
+            - generic [ref=e96]: "15"
+            - generic [ref=e97]: Koin awal
+      - generic [ref=e98]:
+        - generic:
+          - button "7 7 Konsumer Rumor fee 1" [disabled]:
+            - generic: "7"
+            - generic: "7"
+            - generic: Konsumer
+            - generic: Rumor
+            - generic: fee 1
+        - generic:
+          - button "23 23 Tambang Akuisisi fee 2" [disabled]:
+            - generic: "23"
+            - generic: "23"
+            - generic: Tambang
+            - generic: Akuisisi
+            - generic: fee 2
+        - generic:
+          - button "Reksa Dana Saham Polos gratis" [disabled]:
+            - generic: Reksa Dana
+            - generic: Saham Polos
+            - generic: gratis
+        - generic [ref=e101]:
+          - generic [ref=e102]:
+            - generic [ref=e103]: Papan Pasar
+            - generic [ref=e104]: LIVE SIM
+          - generic [ref=e106]:
+            - generic [ref=e107]: Konsumer
+            - generic [ref=e114]: "5"
+            - generic [ref=e115]: "-1"
+          - generic [ref=e116]:
+            - generic [ref=e117]: Keuangan
+            - generic [ref=e122]: "5"
+            - generic [ref=e123]: "-1"
+          - generic [ref=e124]:
+            - generic [ref=e125]: Agrikultur
+            - generic [ref=e130]: "5"
+            - generic [ref=e131]: "+2"
+          - generic [ref=e132]:
+            - generic [ref=e133]: Tambang
+            - generic [ref=e138]: "5"
+            - generic [ref=e139]: "0"
+          - generic [ref=e140]:
+            - generic [ref=e141]: Reksa Dana
+            - generic [ref=e147]: "5"
+            - generic [ref=e148]: avg
+    - generic [ref=e149]:
+      - generic [ref=e150]:
+        - heading "Lawan Bot" [level=3] [ref=e157]
+        - paragraph [ref=e158]: "Langsung main solo melawan 2–4 bot. Pilih tingkat kesulitan: Random yang kacau atau Smart yang menghitung harga."
+        - generic [ref=e159]:
+          - generic [ref=e160]:
+            - generic [ref=e161]: Nama kamu
+            - textbox "Nama kamu" [ref=e162]:
+              - /placeholder: Trader
+          - generic [ref=e163]:
+            - generic [ref=e164]: Jumlah bot
+            - generic [ref=e165]:
+              - button "Kurangi bot" [ref=e166] [cursor=pointer]
+              - generic [ref=e168]: "3"
+              - button "Tambah bot" [ref=e169] [cursor=pointer]
+          - generic [ref=e172]:
+            - generic [ref=e173]: Kesulitan
+            - generic [ref=e174]:
+              - button "Random" [ref=e175] [cursor=pointer]
+              - button "Smart" [ref=e176] [cursor=pointer]
+          - button "Mulai Bermain" [ref=e177] [cursor=pointer]
+      - generic [ref=e180]:
+        - heading "Buat Room" [level=3] [ref=e184]
+        - paragraph [ref=e185]: Jadi host, bagikan kode unik ke teman, dan mulai begitu 3–5 pemain siap. Bot bisa mengisi kursi kosong.
+        - generic [ref=e186]:
+          - generic [ref=e187]:
+            - generic [ref=e188]: Nama kamu
+            - textbox "Nama kamu" [ref=e189]:
+              - /placeholder: Trader
+          - generic [ref=e190]: Kamu melihat papan publik sebagai host. Semua perhitungan bank & kartu ekonomi otomatis oleh engine.
+          - button "Buat Room" [ref=e195] [cursor=pointer]
+      - generic [ref=e198]:
+        - heading "Gabung Room" [level=3] [ref=e203]
+        - paragraph [ref=e204]: Punya kode dari teman? Masukkan 6 karakter kodenya dan duduk di meja yang sama.
+        - generic [ref=e205]:
+          - generic [ref=e206]:
+            - generic [ref=e207]: Kode room
+            - textbox "Kode room" [ref=e208]:
+              - /placeholder: ABC123
+          - generic [ref=e209]:
+            - generic [ref=e210]: Nama kamu
+            - textbox "Nama kamu" [ref=e211]:
+              - /placeholder: Trader
+          - button "Gabung" [ref=e212] [cursor=pointer]
+    - generic [ref=e216]:
+      - heading "Cara Main" [level=2] [ref=e217]
+      - paragraph [ref=e218]: Satu siklus = empat fase. Ulangi 6 kali, lalu hitung koin.
+      - generic [ref=e219]:
+        - generic [ref=e220]:
+          - text: FASE 01
+          - heading "Bidding" [level=4] [ref=e221]
+          - paragraph [ref=e223]: Lelang tertutup serentak. Bid tertinggi dapat urutan jalan 1 — bayar bid ke bank. Seri? Nomor urutan lama yang lebih kecil menang.
+        - generic [ref=e224]:
+          - text: FASE 02
+          - heading "Aksi" [level=4] [ref=e225]
+          - paragraph [ref=e227]: "Berputar sesuai urutan: ambil kartu terbuka sebagai aset atau pakai efeknya (Quick Buy, Rumor, Info Bursa, Akuisisi). Trading fee dibayar saat mengambil."
+        - generic [ref=e228]:
+          - text: FASE 03
+          - heading "Jual" [level=4] [ref=e229]
+          - paragraph [ref=e231]: "Jual maksimal 1 jenis aset, jumlah lembar bebas. Saham = harga × (Split ? 2 : 1). Pengguna Info Bursa menjual paling akhir."
+        - generic [ref=e232]:
+          - text: FASE 04
+          - heading "Ekonomi" [level=4] [ref=e233]
+          - paragraph [ref=e235]: "Satu kartu terbuka per sektor: Boom, Crash, Dividen, Split, Right Issue… Kartu ungu (Pajak, Resesi, Buyback, Restrukturisasi) dieksekusi duluan."
+      - generic [ref=e236]: Utang itu paksa. Kalau koin kurang saat wajib bayar, kamu otomatis mengambil Kartu Utang (pinjaman 5 koin) — tiap kartu memotong skor akhir sebesar 7. Menang = koin terbanyak setelah likuidasi semua aset.
+  - contentinfo [ref=e241]:
+    - generic [ref=e242]: StockLab — engine deterministik, server-authoritative.
+    - generic [ref=e243]: 6 ronde · 3–5 pemain · hidden info aman
+  - alert [ref=e244]

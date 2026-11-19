@@ -1,0 +1,42 @@
+- generic [active] [ref=f3e1]:
+  - alert [ref=f3e244]
+  - banner [ref=f3e245]:
+    - generic [ref=f3e246]:
+      - link "STOCK LAB" [ref=f3e247] [cursor=pointer]:
+        - /url: /
+        - text: STOCK
+        - generic [ref=f3e250]: LAB
+      - generic [ref=f3e251]: X7TJA2
+      - button "Matikan suara" [ref=f3e252] [cursor=pointer]
+      - button "Kembali ke beranda" [ref=f3e256] [cursor=pointer]
+  - main [ref=f3e259]:
+    - generic [ref=f3e262]:
+      - generic [ref=f3e263]:
+        - generic [ref=f3e264]:
+          - generic [ref=f3e265]: Kode Room — bagikan ke temanmu
+          - generic [ref=f3e266]: X7TJA2
+        - generic [ref=f3e267]:
+          - button "Salin Kode" [ref=f3e268] [cursor=pointer]
+          - button "Bagikan" [ref=f3e272] [cursor=pointer]
+      - generic [ref=f3e273]:
+        - generic [ref=f3e274]:
+          - generic [ref=f3e275]: Meja Permainan
+          - generic [ref=f3e276]: 1/5 kursi
+          - generic [ref=f3e277]: Host
+        - generic [ref=f3e280]:
+          - generic [ref=f3e281]:
+            - generic [ref=f3e286]: Trader (kamu)
+            - generic [ref=f3e287]: Host
+          - generic [ref=f3e291]: Kursi kosong — menunggu pemain…
+          - generic [ref=f3e292]: Kursi kosong — menunggu pemain…
+          - generic [ref=f3e293]: Kursi kosong — menunggu pemain…
+          - generic [ref=f3e294]: Kursi kosong — menunggu pemain…
+      - generic [ref=f3e296]:
+        - generic [ref=f3e297]:
+          - generic [ref=f3e298]: Isi kursi dengan bot
+          - generic [ref=f3e299]:
+            - button "Bot Random" [ref=f3e300] [cursor=pointer]
+            - button "Bot Smart" [ref=f3e303] [cursor=pointer]
+        - button "Mulai Game (1 pemain)" [disabled] [ref=f3e306]
+        - paragraph [ref=f3e309]: Butuh minimal 3 pemain — undang teman atau tambahkan bot.
+        - button "Keluar room" [ref=f3e310] [cursor=pointer]

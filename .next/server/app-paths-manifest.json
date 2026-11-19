@@ -1,0 +1,16 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/rooms/[code]/action/route": "app/api/rooms/[code]/action/route.js",
+  "/api/rooms/[code]/bots/route": "app/api/rooms/[code]/bots/route.js",
+  "/api/rooms/[code]/join/route": "app/api/rooms/[code]/join/route.js",
+  "/api/rooms/[code]/leave/route": "app/api/rooms/[code]/leave/route.js",
+  "/api/rooms/[code]/restart/route": "app/api/rooms/[code]/restart/route.js",
+  "/api/rooms/[code]/skip/route": "app/api/rooms/[code]/skip/route.js",
+  "/api/rooms/[code]/start/route": "app/api/rooms/[code]/start/route.js",
+  "/api/rooms/[code]/state/route": "app/api/rooms/[code]/state/route.js",
+  "/api/rooms/route": "app/api/rooms/route.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
+  "/page": "app/page.js",
+  "/room/[code]/page": "app/room/[code]/page.js"
+}

@@ -1,0 +1,143 @@
+- generic [ref=f1e1]:
+  - alert [ref=f1e244]
+  - banner [ref=f1e245]:
+    - generic [ref=f1e246]:
+      - link "STOCK LAB" [ref=f1e247] [cursor=pointer]:
+        - /url: /
+        - text: STOCK
+        - generic [ref=f1e250]: LAB
+      - generic [ref=f1e251]: DDY3VC
+      - button "Matikan suara" [ref=f1e252] [cursor=pointer]
+      - button "Kembali ke beranda" [ref=f1e256] [cursor=pointer]
+  - main [ref=f1e259]:
+    - generic [ref=f1e260]:
+      - generic [ref=f1e261]:
+        - generic "Ronde 1 dari 6" [ref=f1e262]:
+          - generic [ref=f1e263]: "1"
+          - generic [ref=f1e264]: "2"
+          - generic [ref=f1e265]: "3"
+          - generic [ref=f1e266]: "4"
+          - generic [ref=f1e267]: "5"
+          - generic [ref=f1e268]: "6"
+        - generic [ref=f1e269]: Jual
+        - generic [ref=f1e270]: 52 kartu di deck
+        - button "Lewati Giliran" [ref=f1e271] [cursor=pointer]
+      - generic [ref=f1e274]:
+        - generic [ref=f1e275]:
+          - generic [ref=f1e277]:
+            - generic [ref=f1e278]:
+              - generic [ref=f1e279]:
+                - generic [ref=f1e280]:
+                  - generic "Urutan jalan" [ref=f1e281]: "1"
+                  - generic [ref=f1e282]: Bot Smart 3
+                  - generic [ref=f1e289]: "??"
+                - generic [ref=f1e657]:
+                  - generic [ref=f1e658]: "1"
+                  - generic [ref=f1e661]: "1"
+              - generic [ref=f1e296]:
+                - generic [ref=f1e297]:
+                  - generic "Urutan jalan" [ref=f1e298]: "2"
+                  - generic [ref=f1e299]: Bot Smart 1
+                  - generic [ref=f1e306]: "??"
+                - generic [ref=f1e664]:
+                  - generic [ref=f1e665]: "1"
+                  - generic [ref=f1e670]: "1"
+              - generic [ref=f1e313]:
+                - generic [ref=f1e314]:
+                  - generic "Urutan jalan" [ref=f1e315]: "4"
+                  - generic [ref=f1e316]: Bot Smart 2
+                  - generic [ref=f1e323]: "??"
+                - generic [ref=f1e720]: "1"
+            - generic [ref=f1e330]:
+              - generic [ref=f1e331]:
+                - generic [ref=f1e332]: Konsumer
+                - generic [ref=f1e337]: "5"
+                - generic [ref=f1e341]:
+                  - generic [ref=f1e342]: "0"
+                  - generic [ref=f1e343]: "5"
+                  - generic [ref=f1e344]: "10"
+                - generic [ref=f1e345]:
+                  - generic [ref=f1e346]: 6 kartu
+                  - generic [ref=f1e351]: tumpukanekonomi
+              - generic [ref=f1e352]:
+                - generic [ref=f1e353]: Agrikultur
+                - generic [ref=f1e356]: "5"
+                - generic [ref=f1e360]:
+                  - generic [ref=f1e361]: "0"
+                  - generic [ref=f1e362]: "5"
+                  - generic [ref=f1e363]: "10"
+                - generic [ref=f1e364]:
+                  - generic [ref=f1e365]: 6 kartu
+                  - generic [ref=f1e370]: tumpukanekonomi
+              - generic [ref=f1e371]:
+                - generic [ref=f1e372]: Reksa Dana
+                - generic [ref=f1e376]: "5"
+                - generic [ref=f1e380]:
+                  - generic [ref=f1e381]: "0"
+                  - generic [ref=f1e382]: "5"
+                  - generic [ref=f1e383]: "10"
+                - generic [ref=f1e384]: harga = floor((S2 + S3) ÷ 2)tanpa kartu ekonomi
+              - generic [ref=f1e386]:
+                - generic [ref=f1e387]: Tambang
+                - generic [ref=f1e390]: "5"
+                - generic [ref=f1e394]:
+                  - generic [ref=f1e395]: "0"
+                  - generic [ref=f1e396]: "5"
+                  - generic [ref=f1e397]: "10"
+                - generic [ref=f1e398]:
+                  - generic [ref=f1e399]: 6 kartu
+                  - generic [ref=f1e404]: tumpukanekonomi
+              - generic [ref=f1e405]:
+                - generic [ref=f1e406]: Keuangan
+                - generic [ref=f1e409]: "5"
+                - generic [ref=f1e413]:
+                  - generic [ref=f1e414]: "0"
+                  - generic [ref=f1e415]: "5"
+                  - generic [ref=f1e416]: "10"
+                - generic [ref=f1e417]:
+                  - generic [ref=f1e418]: 6 kartu
+                  - generic [ref=f1e423]: tumpukanekonomi
+            - generic [ref=f1e424]:
+              - generic [ref=f1e425]:
+                - generic [ref=f1e426]: 52 deck
+                - generic [ref=f1e431]: Deck aksi
+              - generic [ref=f1e432]:
+                - generic [ref=f1e433]: Kartu terbuka — 0 lembar
+                - paragraph [ref=f1e725]: Tidak ada kartu terbuka di meja.
+            - generic [ref=f1e598]:
+              - generic [ref=f1e599]:
+                - generic "Nomor urutan jalanmu" [ref=f1e600]:
+                  - generic [ref=f1e601]: "3"
+                  - generic [ref=f1e602]: URUTAN
+                - generic [ref=f1e603]:
+                  - generic [ref=f1e604]: Trader
+                  - generic [ref=f1e605]: "12"
+                - generic [ref=f1e726]: Pilih kartu di tanganmu untuk dijual
+              - button "Reksa Dana Saham Polos 5k" [active] [pressed] [ref=f1e705] [cursor=pointer]:
+                - generic [ref=f1e706]: Reksa Dana
+                - generic [ref=f1e714]: Saham Polos
+                - generic [ref=f1e715]: 5k
+          - generic [ref=f1e614]:
+            - generic [ref=f1e615]: Giliranmu — jual aset
+            - paragraph [ref=f1e619]: "Maksimal 1 jenis aset per ronde, jumlah lembar bebas. Harga saham = harga × (Split ? 2 : 1)."
+            - button "Reksa Dana ×1 · 5/lembar" [ref=f1e731] [cursor=pointer]
+            - button "#83 · 5k" [ref=f1e736] [cursor=pointer]
+            - generic [ref=f1e737]:
+              - generic [ref=f1e738]: 1 kartu dipilih
+              - generic [ref=f1e739]: "+5"
+            - generic [ref=f1e743]:
+              - button "Jual (+5 koin)" [ref=f1e744] [cursor=pointer]
+              - button "Lewati" [ref=f1e748] [cursor=pointer]
+        - complementary [ref=f1e640]:
+          - generic [ref=f1e641]:
+            - text: Catatan Bursa
+            - generic "Ronde 1 dari 6" [ref=f1e642]:
+              - generic [ref=f1e643]: "1"
+              - generic [ref=f1e644]: "2"
+              - generic [ref=f1e645]: "3"
+              - generic [ref=f1e646]: "4"
+              - generic [ref=f1e647]: "5"
+              - generic [ref=f1e648]: "6"
+            - generic [ref=f1e649]:
+              - generic [ref=f1e650]: "Ronde 1: 8 kartu aksi dibuka"
+              - generic [ref=f1e701]: "Bid: P3=2 P1=2 P0=1 P2=1"

@@ -1,0 +1,148 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "onMatchHeaders": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/api/rooms/[code]/action",
+      "regex": "^/api/rooms/([^/]+?)/action(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/api/rooms/(?<nxtPcode>[^/]+?)/action(?:/)?$"
+    },
+    {
+      "page": "/api/rooms/[code]/bots",
+      "regex": "^/api/rooms/([^/]+?)/bots(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/api/rooms/(?<nxtPcode>[^/]+?)/bots(?:/)?$"
+    },
+    {
+      "page": "/api/rooms/[code]/join",
+      "regex": "^/api/rooms/([^/]+?)/join(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/api/rooms/(?<nxtPcode>[^/]+?)/join(?:/)?$"
+    },
+    {
+      "page": "/api/rooms/[code]/leave",
+      "regex": "^/api/rooms/([^/]+?)/leave(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/api/rooms/(?<nxtPcode>[^/]+?)/leave(?:/)?$"
+    },
+    {
+      "page": "/api/rooms/[code]/restart",
+      "regex": "^/api/rooms/([^/]+?)/restart(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/api/rooms/(?<nxtPcode>[^/]+?)/restart(?:/)?$"
+    },
+    {
+      "page": "/api/rooms/[code]/skip",
+      "regex": "^/api/rooms/([^/]+?)/skip(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/api/rooms/(?<nxtPcode>[^/]+?)/skip(?:/)?$"
+    },
+    {
+      "page": "/api/rooms/[code]/start",
+      "regex": "^/api/rooms/([^/]+?)/start(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/api/rooms/(?<nxtPcode>[^/]+?)/start(?:/)?$"
+    },
+    {
+      "page": "/api/rooms/[code]/state",
+      "regex": "^/api/rooms/([^/]+?)/state(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/api/rooms/(?<nxtPcode>[^/]+?)/state(?:/)?$"
+    },
+    {
+      "page": "/room/[code]",
+      "regex": "^/room/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/room/(?<nxtPcode>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/api/rooms",
+      "regex": "^/api/rooms(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/rooms(?:/)?$"
+    },
+    {
+      "page": "/icon.svg",
+      "regex": "^/icon\\.svg(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/icon\\.svg(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

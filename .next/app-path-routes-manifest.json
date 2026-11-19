@@ -1,0 +1,16 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/rooms/[code]/action/route": "/api/rooms/[code]/action",
+  "/api/rooms/[code]/bots/route": "/api/rooms/[code]/bots",
+  "/api/rooms/[code]/join/route": "/api/rooms/[code]/join",
+  "/api/rooms/[code]/leave/route": "/api/rooms/[code]/leave",
+  "/api/rooms/[code]/restart/route": "/api/rooms/[code]/restart",
+  "/api/rooms/[code]/skip/route": "/api/rooms/[code]/skip",
+  "/api/rooms/[code]/start/route": "/api/rooms/[code]/start",
+  "/api/rooms/[code]/state/route": "/api/rooms/[code]/state",
+  "/api/rooms/route": "/api/rooms",
+  "/icon.svg/route": "/icon.svg",
+  "/page": "/",
+  "/room/[code]/page": "/room/[code]"
+}

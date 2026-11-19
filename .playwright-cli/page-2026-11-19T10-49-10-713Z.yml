@@ -1,0 +1,45 @@
+- generic [ref=f3e1]:
+  - alert [ref=f3e244]
+  - banner [ref=f3e245]:
+    - generic [ref=f3e246]:
+      - link "STOCK LAB" [ref=f3e247] [cursor=pointer]:
+        - /url: /
+        - text: STOCK
+        - generic [ref=f3e250]: LAB
+      - generic [ref=f3e251]: X7TJA2
+      - button "Matikan suara" [ref=f3e252] [cursor=pointer]
+      - button "Kembali ke beranda" [ref=f3e256] [cursor=pointer]
+  - main [ref=f3e259]:
+    - generic [ref=f3e262]:
+      - generic [ref=f3e263]:
+        - generic [ref=f3e264]:
+          - generic [ref=f3e265]: Kode Room — bagikan ke temanmu
+          - generic [ref=f3e266]: X7TJA2
+        - generic [ref=f3e267]:
+          - button "Salin Kode" [ref=f3e268] [cursor=pointer]
+          - button "Bagikan" [ref=f3e272] [cursor=pointer]
+      - generic [ref=f3e273]:
+        - generic [ref=f3e274]:
+          - generic [ref=f3e275]: Meja Permainan
+          - generic [ref=f3e276]: 3/5 kursi
+          - generic [ref=f3e277]: Host
+        - generic [ref=f3e280]:
+          - generic [ref=f3e281]:
+            - generic [ref=f3e286]: Trader (kamu)
+            - generic [ref=f3e287]: Host
+          - generic [ref=f3e311]: Sari
+          - generic [ref=f3e317]:
+            - generic [ref=f3e324]: Bot Smart 2
+            - generic [ref=f3e325]:
+              - generic [ref=f3e326]: smart
+              - button "Keluarkan Bot Smart 2" [ref=f3e327] [cursor=pointer]
+          - generic [ref=f3e291]: Kursi kosong — menunggu pemain…
+          - generic [ref=f3e292]: Kursi kosong — menunggu pemain…
+      - generic [ref=f3e296]:
+        - generic [ref=f3e297]:
+          - generic [ref=f3e298]: Isi kursi dengan bot
+          - generic [ref=f3e299]:
+            - button "Bot Random" [ref=f3e300] [cursor=pointer]
+            - button "Bot Smart" [active] [ref=f3e303] [cursor=pointer]
+        - button "Mulai Game (3 pemain)" [ref=f3e330] [cursor=pointer]
+        - button "Keluar room" [ref=f3e310] [cursor=pointer]

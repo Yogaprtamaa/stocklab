@@ -1,0 +1,12 @@
+[  122902ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0
+[  123794ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0
+[  124694ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0
+[  125594ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0
+[  126493ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0
+[  127393ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0
+[  128292ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0
+[  129194ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0
+[  130094ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0
+[  130993ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0
+[  131892ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0
+[  132863ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/api/rooms/X7TJA2/state?token=1c7899e1-9326-4238-9672-58079287cc7b:0

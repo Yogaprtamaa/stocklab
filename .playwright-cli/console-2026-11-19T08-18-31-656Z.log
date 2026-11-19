@@ -1,0 +1,12 @@
+[  422326ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
+[  423210ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
+[  424114ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
+[  425009ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
+[  429493ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
+[  430313ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
+[  431217ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
+[  432115ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
+[  433015ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
+[  433912ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
+[  434812ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
+[  435746ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/api/rooms/DDY3VC/state?token=3c277fe3-f942-4693-807c-3af79d42254b:0
