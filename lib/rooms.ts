@@ -1,3 +1,5 @@
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { applyAction, currentActors, newGame, viewFor, GameError } from '../engine.ts';
 import type { Action, GameState } from '../engine.ts';
 import { CONFIG } from '../config.ts';
@@ -23,7 +25,29 @@ export interface Room {
 }
 
 const g = globalThis as unknown as { __stocklabRooms?: Map<string, Room> };
-export const rooms: Map<string, Room> = (g.__stocklabRooms ??= new Map());
+
+/** Room disimpan ke disk agar sesi (token) tetap valid setelah server restart/HMR. */
+const DATA_FILE = join(process.cwd(), '.data', 'rooms.json');
+type StoredRoom = Omit<Room, 'botTimer'>;
+
+function loadRooms(): Map<string, Room> {
+  const map = new Map<string, Room>();
+  try {
+    const list = JSON.parse(readFileSync(DATA_FILE, 'utf8')) as StoredRoom[];
+    for (const r of list) if (r && typeof r.code === 'string') map.set(r.code, { ...r, botTimer: null });
+  } catch { /* belum ada file / rusak → mulai kosong */ }
+  return map;
+}
+
+function persistRooms(): void {
+  try {
+    mkdirSync(dirname(DATA_FILE), { recursive: true });
+    const list: StoredRoom[] = [...rooms.values()].map(({ botTimer: _botTimer, ...r }) => r);
+    writeFileSync(DATA_FILE, JSON.stringify(list));
+  } catch (e) { console.error('Gagal menyimpan room ke disk:', e); }
+}
+
+export const rooms: Map<string, Room> = (g.__stocklabRooms ??= loadRooms());
 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const token = () => crypto.randomUUID();
@@ -47,7 +71,9 @@ export function cleanName(raw: unknown): string {
 
 function sweep() {
   const cutoff = Date.now() - 24 * 3600 * 1000;
-  for (const [code, r] of rooms) if (r.createdAt < cutoff) { if (r.botTimer) clearTimeout(r.botTimer); rooms.delete(code); }
+  let removed = false;
+  for (const [code, r] of rooms) if (r.createdAt < cutoff) { if (r.botTimer) clearTimeout(r.botTimer); rooms.delete(code); removed = true; }
+  if (removed) persistRooms();
 }
 
 function seatOf(room: Room, tok: unknown): Seat {
@@ -73,6 +99,7 @@ export function createRoom(name: string): { room: Room; seat: Seat } {
   const seat: Seat = { pid: 0, name: cleanName(name), token: token(), bot: false, difficulty: 'smart', lastSeen: Date.now() };
   room.seats.push(seat);
   rooms.set(room.code, room);
+  persistRooms();
   return { room, seat };
 }
 
@@ -82,6 +109,7 @@ export function addBot(room: Room, difficulty: Difficulty): Seat {
   const pid = room.seats.length;
   const seat: Seat = { pid, name: `Bot ${difficulty === 'smart' ? 'Smart' : 'Random'} ${pid}`, token: token(), bot: true, difficulty, lastSeen: Date.now() };
   room.seats.push(seat);
+  persistRooms();
   return seat;
 }
 
@@ -91,6 +119,7 @@ export function joinRoom(code: string, name: string): { room: Room; seat: Seat }
   if (room.seats.length >= CONFIG.maxPlayers) err(400, 'Room penuh (maks 5 pemain).');
   const seat: Seat = { pid: room.seats.length, name: cleanName(name), token: token(), bot: false, difficulty: 'smart', lastSeen: Date.now() };
   room.seats.push(seat);
+  persistRooms();
   return { room, seat };
 }
 
@@ -101,6 +130,7 @@ export function startGame(room: Room, tok: unknown): void {
   if (room.seats.length < CONFIG.minPlayers) err(400, 'Butuh minimal 3 pemain. Tambahkan bot atau undang teman.');
   room.state = newGame(room.seats.length, (Date.now() ^ Math.floor(Math.random() * 0x7fffffff)) | 0);
   room.gamesPlayed++;
+  persistRooms();
   scheduleBots(room);
 }
 
@@ -114,6 +144,7 @@ export function doAction(room: Room, tok: unknown, action: Action): void {
     if (e instanceof GameError) err(400, e.message);
     throw e;
   }
+  persistRooms();
   scheduleBots(room);
 }
 
@@ -125,6 +156,7 @@ export function skipTurn(room: Room, tok: unknown): void {
   const actor = currentActors(s)[0];
   if (actor === undefined) err(400, 'Tidak ada giliran aktif.');
   room.state = applyAction(s, actor, autoAction(s, actor));
+  persistRooms();
   scheduleBots(room);
 }
 
@@ -136,11 +168,13 @@ export function leaveRoom(room: Room, tok: unknown): void {
   if (!room.seats.some((s) => !s.bot)) {
     if (room.botTimer) clearTimeout(room.botTimer);
     rooms.delete(room.code);
+    persistRooms();
     return;
   }
   room.seats.forEach((s, i) => { s.pid = i; });
   if (wasHost) room.hostPid = room.seats.find((s) => !s.bot)!.pid;
   room.state = null;
+  persistRooms();
 }
 
 /** Satu timer serial per room; bot bertindak dengan jeda agar manusia bisa mengikuti. */
@@ -162,6 +196,7 @@ export function scheduleBots(room: Room): void {
     for (const a of botCandidates(st, pid, botSeat.difficulty)) {
       try { room.state = applyAction(st, pid, a); break; } catch (e) { if (!(e instanceof GameError)) throw e; }
     }
+    persistRooms();
     scheduleBots(room);
   }, 850 + Math.random() * 700);
 }
