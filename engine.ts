@@ -36,7 +36,7 @@ export interface GameState {
   result?: { scores: { id: number; total: number; order: number }[]; winner: number };
 }
 export interface EffectParams {
-  moves?: { sector: Sector; delta: 1 | -1 }[]; // RUMOR
+  moves?: { sector: Sector; delta: 1 | -1 | 2 | -2 }[]; // RUMOR
   sectors?: Sector[]; // INFO
   targetCardId?: number; // ACQUIRE
   cardIds?: number[]; // QUICK_BUY
@@ -104,7 +104,33 @@ export function newGame(playerCount: number, seed = 1): GameState {
 // ───────────────────────── Helpers ─────────────────────────
 const byOrder = (s: GameState) => [...s.players].sort((a, b) => a.order - b.order);
 const clamp = (n: number) => Math.max(CONFIG.minPrice, Math.min(CONFIG.maxPrice, n));
-const movePrice = (s: GameState, sec: Sector, d: number) => { s.price[sec] = clamp(s.price[sec] + d); };
+
+/**
+ * Geser harga sektor. Melewati batas bawah = Stock Crash, batas atas = Stock Split.
+ * Rumor memakai `boundaries: false` karena efek itu tidak boleh memicu Crash/Split.
+ */
+function movePrice(s: GameState, sec: Sector, d: number, opts: { boundaries?: boolean } = {}): void {
+  if (d === 0) return;
+  const next = s.price[sec] + d;
+  if (opts.boundaries === false) { s.price[sec] = clamp(next); return; }
+  if (next < CONFIG.minPrice) { stockCrash(s, sec); return; }
+  if (next > CONFIG.maxPrice) { split(s, sec); s.price[sec] = CONFIG.maxPrice; return; }
+  s.price[sec] = next;
+}
+
+/** Harga menembus batas bawah: semua saham sektor itu kembali ke Bank, harga reset. */
+function stockCrash(s: GameState, sec: Sector): void {
+  let returned = 0;
+  for (const p of s.players) {
+    const held = stocksOf(p, sec);
+    if (!held.length) continue;
+    returned += held.length;
+    s.discard.push(...held);
+    p.assets = p.assets.filter((c) => c.kind !== sec);
+  }
+  s.price[sec] = CONFIG.startPrice;
+  s.log.push(`Stock Crash ${sec}: ${returned} lembar kembali ke Bank, harga reset ${CONFIG.startPrice}`);
+}
 
 export function fundPrice(s: GameState): number {
   return Math.floor((s.price[s.board[1]] + s.price[s.board[2]]) / 2);
@@ -112,7 +138,7 @@ export function fundPrice(s: GameState): number {
 function value(s: GameState, c: ActionCard): number {
   return c.kind === 'FUND' ? fundPrice(s) : s.price[c.kind] * (c.split ? 2 : 1);
 }
-/** Bayar; kalau koin kurang -> Kartu Utang paksa (1 kartu = pinjaman 5 koin, kembalian masuk saldo). */
+/** Bayar; kalau koin kurang -> Kartu Utang paksa (1 kartu = pinjaman 10 koin, kembalian masuk saldo). */
 export function pay(s: GameState, payer: Player, amount: number, payee?: Player): void {
   if (amount <= 0) return;
   if (payer.coins < amount) {
@@ -197,7 +223,8 @@ export function applyAction(prev: GameState, pid: number, a: Action): GameState 
 function bid(s: GameState, p: Player, amount: number): void {
   if (s.phase !== 'BIDDING') fail('bukan fase bidding');
   if (p.bid !== null) fail('sudah bid');
-  if (!Number.isInteger(amount) || amount < 0 || amount > p.coins) fail('bid tidak valid');
+  const minBid = Math.min(CONFIG.minBid, p.coins); // tanpa koin = pass paksa (0)
+  if (!Number.isInteger(amount) || amount < minBid || amount > p.coins) fail(`bid minimal ${minBid} koin`);
   p.bid = amount;
   if (s.players.every((q) => q.bid !== null)) resolveBids(s);
 }
@@ -231,10 +258,13 @@ function runEffect(s: GameState, p: Player, card: ActionCard, x: EffectParams): 
     case 'RUMOR': {
       const m = x.moves ?? [];
       if (m.length < 1 || m.length > CONFIG.rumorMoves) fail('Rumor: 1-2 perubahan');
+      const single = m.length === 1;
       for (const { sector, delta } of m) {
-        if (!SECTORS.includes(sector) || (delta !== 1 && delta !== -1)) fail('Rumor: parameter tidak valid');
-        movePrice(s, sector, delta);
+        const ok = single ? [1, -1, 2, -2].includes(delta) : delta === 1 || delta === -1;
+        if (!SECTORS.includes(sector) || !ok) fail('Rumor: ±1 ke 1-2 sektor atau ±2 ke satu sektor');
       }
+      // Rumor tidak memicu Stock Crash / Stock Split.
+      for (const { sector, delta } of m) movePrice(s, sector, delta, { boundaries: false });
       return;
     }
     case 'INFO': {
@@ -249,7 +279,12 @@ function runEffect(s: GameState, p: Player, card: ActionCard, x: EffectParams): 
       const owner = s.players.find((q) => q.id !== p.id && q.assets.some((c) => c.id === x.targetCardId)) ?? fail('target tidak valid');
       const target = owner.assets.find((c) => c.id === x.targetCardId)!;
       if (target.kind === 'FUND') fail('Reksa Dana tidak bisa diakuisisi');
-      pay(s, p, Math.floor(s.price[target.kind as Sector] / 2), owner);
+      const sec = target.kind as Sector;
+      const mine = stocksOf(p, sec).length;
+      const theirs = stocksOf(owner, sec).length;
+      if (mine < theirs) fail(`Akuisisi ${sec}: butuh minimal ${theirs} lembar (kamu punya ${mine})`);
+      // Kompensasi dibayar ke Bank, bukan ke pemilik saham.
+      pay(s, p, Math.floor(s.price[sec] / 2));
       owner.assets = owner.assets.filter((c) => c !== target);
       p.assets.push(target); // Split token ikut pindah
       return;
@@ -264,6 +299,7 @@ function sell(s: GameState, p: Player, ids: number[]): void {
   if (ids.length) {
     if (new Set(ids).size !== ids.length) fail('kartu duplikat');
     const cards = ids.map((id) => p.assets.find((c) => c.id === id) ?? fail('bukan kartu milikmu'));
+    if (cards.some((c) => c.kind === 'FUND')) fail('Reksa Dana hanya dicairkan di akhir permainan');
     if (new Set(cards.map((c) => c.kind)).size !== 1) fail('hanya boleh jual 1 jenis aset');
     p.coins += cards.reduce((t, c) => t + value(s, c), 0);
     p.assets = p.assets.filter((c) => !cards.includes(c));
@@ -296,8 +332,13 @@ export function resolveEconomy(s: GameState): void {
 }
 
 function stocksOf(p: Player, sec: Sector): ActionCard[] { return p.assets.filter((c) => c.kind === sec); }
+/** Harga menembus batas atas / kartu Split: tiap lembar pemegang dapat token Split (×2 nilai). */
 function split(s: GameState, sec: Sector): void {
-  s.players.forEach((p) => stocksOf(p, sec).forEach((c) => { c.split = true; })); // maks 1 token / kartu
+  let granted = 0;
+  s.players.forEach((p) => stocksOf(p, sec).forEach((c) => {
+    if (!c.split) { c.split = true; granted++; } // maks 1 token / kartu, sesuai suplai fisik
+  }));
+  if (granted) s.log.push(`Stock Split ${sec}: ${granted} lembar dapat token Split`);
 }
 
 function applyEcon(s: GameState, sec: Sector, c: EconCard): void {

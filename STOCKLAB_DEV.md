@@ -35,7 +35,7 @@ node --experimental-strip-types simulate.ts 2000
 - 4 tumpukan ekonomi × 6 kartu tertutup. Tiap pemain: 15 koin + 1 Kartu Urutan acak.
 - Deck aksi 60 kartu (48 saham = 12 × 4 sektor, 12 reksa dana), tiap kartu punya efek dan trading fee.
 
-**Fase 1 — Bidding**: buka `2 × pemain` kartu aksi (filter: maks 3 kartu sektor sama, maks 3 Quick Buy, kalau melanggar kocok ulang). Lelang tertutup serentak; bid dibayar ke bank. Tertinggi = Urutan 1. Seri → nomor urutan lama yang lebih kecil menang.
+**Fase 1 — Bidding**: buka `2 × pemain` kartu aksi (filter: maks 3 kartu sektor sama, maks 3 Quick Buy, kalau melanggar kocok ulang). Lelang tertutup serentak; bid minimal 1 koin (0 hanya bila pemain tidak punya koin), dibayar ke bank. Tertinggi = Urutan 1. Seri → nomor urutan lama yang lebih kecil menang.
 
 **Fase 2 — Aksi**: urutan 1→N, berputar sampai kartu terbuka habis. Tiap kartu dipilih sebagai **aset** (efek mati) atau **efek** (kartu dibuang). Trading fee dibayar saat mengambil; tidak boleh berutang untuk fee.
 
@@ -43,10 +43,10 @@ node --experimental-strip-types simulate.ts 2000
 |---|---|
 | Quick Buy | Ambil 2 kartu terbuka lagi, wajib jadi aset, giliran selesai |
 | Info Bursa | Intip kartu ekonomi teratas dari 2 sektor + 2 koin; jual paling akhir |
-| Rumor | Ubah harga 1 sektor ±1, maks 2 kali (clamp 0–10) |
-| Akuisisi | Ambil 1 saham (bukan reksa dana) lawan, bayar `floor(harga/2)`, Split token ikut |
+| Rumor | Geser harga ±1 di 1–2 sektor, atau ±2 di satu sektor. Clamp 0–10, tidak memicu Crash/Split |
+| Akuisisi | Ambil 1 saham (bukan reksa dana) lawan, bayar `floor(harga/2)` ke Bank. Syarat: jumlah saham sektor itu milik pengakuisisi ≥ milik target. Split token ikut |
 
-**Fase 3 — Jual**: tiap pemain maks 1 jenis aset (jumlah lembar bebas). Saham = `harga × (Split ? 2 : 1)`; Reksa Dana = harga reksa dana.
+**Fase 3 — Jual**: tiap pemain maks 1 jenis aset (jumlah lembar bebas). Saham = `harga × (Split ? 2 : 1)`. Reksa Dana **tidak** dijual di fase ini — cair otomatis saat likuidasi akhir.
 
 **Fase 4 — Ekonomi**: buka 1 kartu dari tiap tumpukan. Ungu dieksekusi dulu (kiri→kanan), lalu biasa. Restrukturisasi membatalkan semua efek lain dan reset harga ke 5.
 
@@ -63,9 +63,11 @@ node --experimental-strip-types simulate.ts 2000
 | RESESI / STIMULUS (ungu) | Semua harga >5 turun 1 / semua harga <5 naik 1 |
 | RESTRUCTURE (ungu) | Batalkan semua efek lain, semua harga → 5 |
 
-**Utang**: hanya paksa, saat wajib bayar (Extra Fee, Pajak, beli Akuisisi) dan koin kurang. 1 Kartu Utang = pinjaman 5 koin (kembalian masuk saldo), −7 skor di akhir.
+**Stock Crash / Stock Split otomatis**: setiap perubahan harga yang menembus batas bawah 0 → semua saham sektor itu kembali ke Bank dan harga reset 5 (Crash). Menembus batas atas 10 → tiap lembar pemegang dapat token Split dan harga berhenti di 10 (Split).
 
-**Akhir**: likuidasi semua aset di harga terakhir → skor = koin − 7 × kartu utang. Seri → nomor urutan siklus terakhir yang lebih kecil.
+**Utang**: hanya paksa, saat wajib bayar (Extra Fee, Pajak, beli Akuisisi) dan koin kurang. 1 Kartu Utang = pinjaman 10 koin (kembalian masuk saldo), −13 skor di akhir.
+
+**Akhir**: likuidasi semua aset di harga terakhir → skor = koin − 13 × kartu utang. Seri → nomor urutan siklus terakhir yang lebih kecil.
 
 ---
 
@@ -163,7 +165,7 @@ Semua nilai di bawah ada di `config.ts` atau ditandai di `engine.ts`, jadi bisa 
 | 3 | Penempatan efek ke sektor/jenis kartu | Acak (24/12/10/8/6 sesuai rulebook) | Perlu data kartu asli kalau mau akurat |
 | 4 | Suplai Kartu Utang | Tak terbatas (fisik cuma 5) | Perlu keputusan |
 | 5 | Suplai Split token | Tak terbatas (fisik 10) | Perlu keputusan |
-| 6 | Utang > 5 koin | `ceil(kurang/5)` kartu sekaligus | Asumsi |
+| 6 | Utang > 10 koin | `ceil(kurang/10)` kartu sekaligus | Asumsi |
 | 7 | Right Issue: sumber kartu baru | Kartu saham polos dari bank (bukan dari deck aksi) + Split | Asumsi |
 | 8 | Quick Buy | Wajib pilih tepat `min(2, sisa)` kartu dan semua fee harus terbayar; kalau tidak bisa, pemain simpan kartu sebagai aset | Asumsi |
 | 9 | Tidak ada yang mampu bayar fee | Pemain di-skip; kalau semua tak mampu, kartu sisa dibuang | Asumsi |
@@ -182,18 +184,18 @@ Seat 0–1 bot random, seat 2–4 bot "smart" (heuristik sederhana).
 |---|---|
 | Game selesai tanpa error / invariant violation | 2000 / 2000 |
 | Rata-rata aksi per game | 106 |
-| Harga akhir rata-rata | Konsumer 5.87, Keuangan 5.87, Agrikultur 5.97, Tambang 6.01 |
-| Game dengan Kartu Utang | 2.0% |
-| Skor rata-rata (seat 0–4) | 55.3, 55.3, 57.2, 56.8, 57.1 |
-| Skor min / max | 8 / 155 |
-| Win-rate | random 34.8% (2 seat), smart 65.3% (3 seat) |
+| Harga akhir rata-rata | Konsumer 5.94, Keuangan 5.91, Agrikultur 5.97, Tambang 6.03 |
+| Game dengan Kartu Utang | 9.5% |
+| Skor rata-rata (seat 0–4) | 55.3, 55.2, 53.8, 52.8, 52.9 |
+| Skor min / max | 2 / 180 |
+| Win-rate | random 43.9% (2 seat), smart 56.1% (3 seat) |
 
 **Cara baca (jujur):**
 - Ini **sanity check**, bukan bukti balance. Bot naif, jadi jangan menyimpulkan strategi optimal dari angka ini.
 - Harga cenderung naik sedikit (rata-rata ~5.9). Wajar untuk awal, tapi pantau setelah deck ekonomi asli masuk.
-- Utang jarang terjadi (2%). Kalau mau mekanik utang terasa, tuning ada di deck ekonomi dan fee, bukan di engine.
-- Skor seat seimbang (~55–57), jadi tidak ada bias seat yang jelas dari engine.
-- Selisih win-rate smart vs random kecil (65.3% vs 60% kalau sama kuat). Artinya keputusan pemain belum terlalu menentukan hasil di bot ini; perlu bot lebih cerdas untuk menilai skill ceiling.
+- Utang jarang terjadi (~10%). Kalau mau mekanik utang terasa, tuning ada di deck ekonomi dan fee, bukan di engine.
+- Skor seat seimbang (~53–55), jadi tidak ada bias seat yang jelas dari engine.
+- Per-seat, smart masih unggul tipis (18.7% vs 22% per seat). Artinya keputusan pemain belum terlalu menentukan hasil di bot ini; perlu bot lebih cerdas untuk menilai skill ceiling.
 
 ---
 

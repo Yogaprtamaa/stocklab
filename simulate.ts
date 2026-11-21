@@ -19,7 +19,8 @@ function candidates(s: GameState, pid: number, st: Strategy, r: () => number): A
 
   if (s.phase === 'BIDDING') {
     const cap = Math.min(p.coins, st === 'smart' ? 2 : 3);
-    return [{ type: 'BID', amount: Math.floor(r() * (cap + 1)) }];
+    const lo = Math.min(CONFIG.minBid, cap);
+    return [{ type: 'BID', amount: lo + Math.floor(r() * (cap - lo + 1)) }];
   }
 
   if (s.phase === 'ACTION') {
@@ -38,7 +39,9 @@ function candidates(s: GameState, pid: number, st: Strategy, r: () => number): A
         const secs = [...SECTORS].sort(() => r() - 0.5).slice(0, 2);
         out.push({ ...base, params: { sectors: secs } });
       } else if (c.effect === 'ACQUIRE') {
-        const targets = s.players.filter((q) => q.id !== pid).flatMap((q) => q.assets).filter((a) => a.kind !== 'FUND');
+        const count = (pl: typeof p, sec: Sector) => pl.assets.filter((a) => a.kind === sec).length;
+        const targets = s.players.filter((q) => q.id !== pid).flatMap((q) =>
+          q.assets.filter((a) => a.kind !== 'FUND' && count(p, a.kind as Sector) >= count(q, a.kind as Sector)));
         if (targets.length) out.push({ ...base, params: { targetCardId: pick(targets).id } });
       } else if (c.effect === 'QUICK_BUY') {
         const others = s.open.filter((o) => o.id !== c.id).sort((a, b) => a.fee - b.fee);
@@ -50,8 +53,8 @@ function candidates(s: GameState, pid: number, st: Strategy, r: () => number): A
   }
 
   // SELL
-  const kinds = [...new Set(p.assets.map((a) => a.kind))];
-  const total = (k: string) => p.assets.filter((a) => a.kind === k).reduce((t, a) => t + (k === 'FUND' ? fundPrice(s) : s.price[k as Sector] * (a.split ? 2 : 1)), 0);
+  const kinds = [...new Set(p.assets.map((a) => a.kind))].filter((k) => k !== 'FUND');
+  const total = (k: string) => p.assets.filter((a) => a.kind === k).reduce((t, a) => t + s.price[k as Sector] * (a.split ? 2 : 1), 0);
   const final = s.round >= CONFIG.rounds;
   const eligible = st === 'smart' ? kinds.filter((k) => final || val(k) >= 6) : kinds.filter(() => r() < 0.4);
   if (!eligible.length) return [{ type: 'SELL', cardIds: [] }];

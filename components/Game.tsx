@@ -76,6 +76,15 @@ export function Game({ payload, session, onAction, onHost }: Props) {
     const t = setTimeout(() => setEconOpen(false), 8000);
     return () => clearTimeout(t);
   }, [econOpen]);
+  // Di mobile, geser baris tenda lawan agar pemain yang sedang giliran selalu terlihat.
+  useEffect(() => {
+    if (window.innerWidth > 720) return;
+    const row = document.querySelector<HTMLElement>('.far-seats');
+    const active = row?.querySelector<HTMLElement>('.tent.turn');
+    if (!row || !active) return;
+    row.scrollTo({ left: Math.max(0, active.offsetLeft - (row.clientWidth - active.clientWidth) / 2), behavior: 'smooth' });
+  }, [view.turn, view.phase, view.round]);
+
   useEffect(() => {
     if (sel === null) return;
     if (window.innerWidth >= 900) {
@@ -98,18 +107,19 @@ export function Game({ payload, session, onAction, onHost }: Props) {
     }
   }, [sel]);
 
+  const valueOf = (c: { kind: Kind; split: boolean }) =>
+    c.kind === 'FUND' ? view.fundPrice : view.price[c.kind as Sector] * (c.split ? 2 : 1);
+
   const groupedAssets = (assets: { kind: Kind; split: boolean }[]) => {
-    const m = new Map<Kind, { n: number; split: number }>();
+    const m = new Map<Kind, { n: number; split: number; value: number }>();
     for (const a of assets) {
-      const g = m.get(a.kind) ?? { n: 0, split: 0 };
+      const g = m.get(a.kind) ?? { n: 0, split: 0, value: 0 };
       g.n++; if (a.split) g.split++;
+      g.value += valueOf(a);
       m.set(a.kind, g);
     }
     return [...m.entries()];
   };
-
-  const valueOf = (c: { kind: Kind; split: boolean }) =>
-    c.kind === 'FUND' ? view.fundPrice : view.price[c.kind as Sector] * (c.split ? 2 : 1);
 
   const toggleSell = (c: { id: number; kind: Kind }) => {
     sfx.slide();
@@ -143,6 +153,7 @@ export function Game({ payload, session, onAction, onHost }: Props) {
             <span key={i} className={`round-pill ${i + 1 < view.round || view.phase === 'ENDED' ? 'done' : i + 1 === view.round ? 'now' : ''}`}>{i + 1}</span>
           ))}
         </div>
+        <span className="chip mobile-round">Ronde {view.round}/{CONFIG.rounds}</span>
         <span className={`phase-badge phase-${view.phase}`}>{PHASE_META[view.phase].label}</span>
         <span className="chip hide-sm">{view.deckCount} kartu di deck</span>
         {myTurn && <span className="turn-chip"><span className="pulse-dot" />Giliranmu</span>}
@@ -151,8 +162,8 @@ export function Game({ payload, session, onAction, onHost }: Props) {
           <IconCoin size={13} />{me.coins ?? '??'}
         </span>
         {isHost && view.phase !== 'ENDED' && (
-          <button className="btn btn-sm hide-sm" title="Paksa auto-pass untuk pemegang giliran (kalau pemain macet)" onClick={() => { sfx.tap(); void onHost('skip'); }}>
-            <IconSkip size={13} />Lewati Giliran
+          <button className="btn btn-sm" aria-label="Lewati giliran pemain yang macet" title="Paksa auto-pass untuk pemegang giliran (kalau pemain macet)" onClick={() => { sfx.tap(); void onHost('skip'); }}>
+            <IconSkip size={13} /><span className="hide-sm">Lewati Giliran</span>
           </button>
         )}
       </div>
@@ -177,18 +188,29 @@ export function Game({ payload, session, onAction, onHost }: Props) {
                         {seat?.bot && <span style={{ color: 'var(--purple-ink)', display: 'inline-flex', flexShrink: 0 }}><IconBot size={13} /></span>}
                         <span className="pcoins"><CoinStack coins={p.coins} /></span>
                       </div>
-                      {p.assets.length > 0 && (
-                        <div className="tent-assets">
-                          {groupedAssets(p.assets).map(([kind, g]) => (
-                            <span key={kind} className="asset-chip" style={{ '--kc': KIND_META[kind].color } as React.CSSProperties}>
-                              <KindIcon kind={kind} size={10} />{g.n}{g.split > 0 ? ` (${g.split}×2)` : ''}
+                      <div className="tent-assets">
+                        {p.assets.length === 0 ? (
+                          <span className="tent-empty">belum punya aset</span>
+                        ) : (
+                          groupedAssets(p.assets).map(([kind, g]) => (
+                            <span
+                              key={kind}
+                              className="asset-chip"
+                              style={{ '--kc': KIND_META[kind].color } as React.CSSProperties}
+                              title={`${KIND_META[kind].label}: ${g.n} lembar${g.split > 0 ? `, ${g.split} bertoken Split (×2)` : ''} · nilai ${g.value} koin`}
+                            >
+                              <KindIcon kind={kind} size={13} />
+                              <span className="ac-name">{KIND_META[kind].label}</span>
+                              <span className="ac-count">×{g.n}</span>
+                              {g.split > 0 && <span className="ac-split">{g.split}×2</span>}
+                              <span className="ac-val">{g.value}k</span>
                             </span>
-                          ))}
-                        </div>
-                      )}
+                          ))
+                        )}
+                      </div>
                       <div className="tent-meta">
                         {p.debt > 0 && (
-                          <span className="debt-stack" title={`Kartu utang: ${p.debt} (−7 skor tiap kartu)`}>
+                          <span className="debt-stack" title={`Kartu utang: ${p.debt} (−13 skor tiap kartu)`}>
                             <Pile count={p.debt} red small />
                             <span className="lbl">utang {p.debt}</span>
                           </span>
@@ -257,13 +279,13 @@ export function Game({ payload, session, onAction, onHost }: Props) {
                     <CoinStack coins={me.coins} pop={coinPop} />
                   </span>
                   {me.debt > 0 && (
-                    <span className="debt-stack" title={`Kartu utang: ${me.debt} (−7 skor tiap kartu)`}>
+                    <span className="debt-stack" title={`Kartu utang: ${me.debt} (−13 skor tiap kartu)`}>
                       <Pile count={me.debt} red small />
                       <span className="lbl">utang {me.debt}</span>
                     </span>
                   )}
                   <div className="spacer" />
-                  {isMySell && <span className="chip chip-gold">Pilih kartu di tanganmu untuk dijual</span>}
+                  {isMySell && <span className="chip chip-gold">Pilih saham di tanganmu — Reksa Dana cair otomatis di akhir</span>}
                 </div>
 
                 <div className="hand">
@@ -275,10 +297,11 @@ export function Game({ payload, session, onAction, onHost }: Props) {
                         key={c.id}
                         card={c}
                         mini
-                        clickable={isMySell}
+                        clickable={isMySell && c.kind !== 'FUND'}
+                        dim={isMySell && c.kind === 'FUND'}
                         selected={isMySell && sellIds.includes(c.id)}
                         foot={<span className="acard-fee"><KindIcon kind={c.kind} size={9} />{valueOf(c)}k{c.split ? ' ×2' : ''}</span>}
-                        onClick={isMySell ? () => toggleSell(c) : undefined}
+                        onClick={isMySell && c.kind !== 'FUND' ? () => toggleSell(c) : undefined}
                       />
                     ))
                   )}

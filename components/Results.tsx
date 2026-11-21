@@ -1,5 +1,6 @@
 'use client';
 import type { GameView, SeatInfo } from '@/lib/client';
+import { CONFIG } from '@/config';
 import { sfx } from '@/lib/sound';
 import { IconCrown, IconHome, IconPlay } from './icons';
 
@@ -33,7 +34,7 @@ export function Results({ view, seats, you, isHost, onRestart, onHome }: Props) 
               <span className="score-rank">{i + 1}</span>
               <span>
                 <span className="score-name">{nameOf(s.id)}{s.id === you ? ' (kamu)' : ''}</span>
-                <div className="score-detail">urutan {s.order} · {debtOf(s.id) > 0 ? `utang ${debtOf(s.id)} × −7 = −${debtOf(s.id) * 7}` : 'tanpa utang'}</div>
+                <div className="score-detail">urutan {s.order} · {debtOf(s.id) > 0 ? `utang ${debtOf(s.id)} × −${CONFIG.debtPenalty} = −${debtOf(s.id) * CONFIG.debtPenalty}` : 'tanpa utang'}</div>
               </span>
               <span className="score-total">{s.total}</span>
             </div>

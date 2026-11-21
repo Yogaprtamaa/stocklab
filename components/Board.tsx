@@ -31,7 +31,7 @@ export function Board({ view }: { view: GameView }) {
     <div className="playmat">
       {cols.map((k) => {
         const isFund = k === 'FUND';
-        const color = isFund ? '#b8860b' : SECTOR_META[k as Sector].color;
+        const color = isFund ? '#129e8a' : SECTOR_META[k as Sector].color;
         const price = isFund ? view.fundPrice : view.price[k as Sector];
         const d = deltas[k] ?? 0;
         const stack = isFund ? 0 : view.stackCounts[k as Sector];

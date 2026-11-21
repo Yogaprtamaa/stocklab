@@ -39,33 +39,97 @@ test('bid melebihi koin ditolak & state lama tidak berubah', () => {
   assert.equal(s.players[0].bid, null);
 });
 
-test('utang: kurang bayar -> Kartu Utang (5 koin), kembalian masuk saldo', () => {
+test('utang: kurang bayar -> Kartu Utang (pinjam 10, potong 13)', () => {
   const s = newGame(3, 1);
   s.players[0].coins = 2;
   pay(s, s.players[0], 7);
   assert.equal(s.players[0].debt, 1);
-  assert.equal(s.players[0].coins, 0);
+  assert.equal(s.players[0].coins, 5);
   s.players[0].coins = 1;
-  pay(s, s.players[0], 3); // kurang 2 -> 1 kartu, saldo 6-3=3
+  pay(s, s.players[0], 3); // kurang 2 -> 1 kartu, saldo 11-3=8
   assert.equal(s.players[0].debt, 2);
-  assert.equal(s.players[0].coins, 3);
+  assert.equal(s.players[0].coins, 8);
 });
 
-test('akuisisi: bayar floor(harga/2), Split token ikut pindah, Reksa Dana ditolak', () => {
+test('akuisisi: bayar floor(harga/2) ke Bank, syarat sahammu >= milik target, Split ikut pindah', () => {
   let s = newGame(3, 1);
   s.phase = 'ACTION';
   const ord = [...s.players].sort((a, b) => a.order - b.order);
   const me = ord[0], victim = ord[1];
   s.turn = me.id;
   s.price.TAMBANG = 7;
+  me.assets = [card(502, 'TAMBANG')];
   victim.assets = [card(500, 'TAMBANG', { split: true }), card(501, 'FUND')];
   s.open = [card(600, 'KONSUMER', { effect: 'ACQUIRE' }), card(601, 'KEUANGAN')];
   assert.throws(() => applyAction(s, me.id, { type: 'TAKE', cardId: 600, mode: 'effect', params: { targetCardId: 501 } }), GameError);
   s = applyAction(s, me.id, { type: 'TAKE', cardId: 600, mode: 'effect', params: { targetCardId: 500 } });
   assert.equal(s.players[me.id].coins, 15 - 3);
-  assert.equal(s.players[victim.id].coins, 15 + 3);
-  assert.equal(s.players[me.id].assets[0].split, true);
+  assert.equal(s.players[victim.id].coins, 15); // kompensasi dari Bank
+  assert.ok(s.players[me.id].assets.some((c) => c.id === 500 && c.split));
   assert.equal(s.players[victim.id].assets.length, 1);
+});
+
+test('akuisisi ditolak bila saham sektor itu lebih sedikit dari target', () => {
+  const s = newGame(3, 1);
+  s.phase = 'ACTION';
+  const ord = [...s.players].sort((a, b) => a.order - b.order);
+  const me = ord[0], victim = ord[1];
+  s.turn = me.id;
+  me.assets = [card(700, 'KEUANGAN')];
+  victim.assets = [card(701, 'KEUANGAN'), card(702, 'KEUANGAN')];
+  s.open = [card(703, 'KONSUMER', { effect: 'ACQUIRE' }), card(704, 'TAMBANG')];
+  assert.throws(() => applyAction(s, me.id, { type: 'TAKE', cardId: 703, mode: 'effect', params: { targetCardId: 701 } }), GameError);
+  assert.equal(s.players[me.id].assets.length, 1);
+});
+
+test('bid minimal 1 koin', () => {
+  const s = newGame(3, 1);
+  assert.throws(() => applyAction(s, 0, { type: 'BID', amount: 0 }), GameError);
+  assert.equal(s.phase, 'BIDDING');
+});
+
+test('Reksa Dana tidak bisa dijual di fase Jual', () => {
+  const s = newGame(3, 1);
+  s.phase = 'SELL';
+  s.turn = s.players[0].id;
+  s.sellQueue = [s.players[0].id];
+  s.players[0].assets = [card(800, 'FUND')];
+  assert.throws(() => applyAction(s, 0, { type: 'SELL', cardIds: [800] }), GameError);
+  assert.equal(s.players[0].assets.length, 1);
+});
+
+test('Rumor: boleh ±2 ke satu sektor, tidak memicu Stock Crash/Split', () => {
+  let s = newGame(3, 1);
+  s.phase = 'ACTION';
+  s.turn = s.players[0].id;
+  s.price.KONSUMER = 1;
+  s.players[0].assets = [card(810, 'KONSUMER')];
+  s.open = [card(811, 'KEUANGAN', { effect: 'RUMOR' })].concat(s.open);
+  s = applyAction(s, s.players[0].id, { type: 'TAKE', cardId: 811, mode: 'effect', params: { moves: [{ sector: 'KONSUMER', delta: -2 }] } });
+  assert.equal(s.price.KONSUMER, 0); // clamp, bukan crash
+  assert.equal(s.players[0].assets.length, 1);
+});
+
+test('harga melewati batas bawah -> Stock Crash: saham kembali ke Bank, harga reset 5', () => {
+  const s = newGame(3, 1);
+  const sec = s.board[0];
+  s.price[sec] = 1;
+  s.players[0].assets = [card(900, sec), card(901, sec, { split: true }), card(902, 'FUND')];
+  setTops(s, { 0: { id: 1, type: 'MOVE', delta: -2 } });
+  resolveEconomy(s);
+  assert.equal(s.price[sec], 5);
+  assert.deepEqual(s.players[0].assets.map((c) => c.kind), ['FUND']);
+});
+
+test('harga melewati batas atas -> Stock Split: pemegang dapat token Split, harga 10', () => {
+  const s = newGame(3, 1);
+  const sec = s.board[0];
+  s.price[sec] = 9;
+  s.players[0].assets = [card(910, sec), card(911, 'FUND')];
+  setTops(s, { 0: { id: 1, type: 'MOVE', delta: 2 } });
+  resolveEconomy(s);
+  assert.equal(s.price[sec], 10);
+  assert.equal(s.players[0].assets[0].split, true);
 });
 
 test('Restrukturisasi membatalkan semua efek lain & reset harga ke 5', () => {

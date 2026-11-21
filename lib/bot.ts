@@ -21,7 +21,8 @@ export function botCandidates(s: GameState, pid: number, st: Difficulty): Action
 
   if (s.phase === 'BIDDING') {
     const cap = Math.min(p.coins, st === 'smart' ? 2 : 3);
-    return [{ type: 'BID', amount: Math.floor(r() * (cap + 1)) }];
+    const lo = Math.min(CONFIG.minBid, cap);
+    return [{ type: 'BID', amount: lo + Math.floor(r() * (cap - lo + 1)) }];
   }
 
   if (s.phase === 'ACTION') {
@@ -36,12 +37,15 @@ export function botCandidates(s: GameState, pid: number, st: Difficulty): Action
       if (c.effect === 'RUMOR') {
         const held = SECTORS.filter((k) => p.assets.some((a) => a.kind === k));
         const mv = () => ({ sector: pick(held.length ? held : [...SECTORS]), delta: 1 as const });
-        out.push({ ...base, params: { moves: st === 'smart' ? [mv(), mv()] : [{ sector: pick([...SECTORS]), delta: r() < 0.5 ? 1 : -1 }] } });
+        const single = { sector: pick([...SECTORS]), delta: (r() < 0.5 ? 2 : -2) as 2 | -2 };
+        out.push({ ...base, params: { moves: st === 'smart' && r() < 0.5 ? [single] : st === 'smart' ? [mv(), mv()] : [{ sector: pick([...SECTORS]), delta: r() < 0.5 ? 1 : -1 }] } });
       } else if (c.effect === 'INFO') {
         const secs = [...SECTORS].sort(() => r() - 0.5).slice(0, 2);
         out.push({ ...base, params: { sectors: secs } });
       } else if (c.effect === 'ACQUIRE') {
-        const targets = s.players.filter((q) => q.id !== pid).flatMap((q) => q.assets).filter((a) => a.kind !== 'FUND');
+        const count = (pl: typeof p, sec: Sector) => pl.assets.filter((a) => a.kind === sec).length;
+        const targets = s.players.filter((q) => q.id !== pid).flatMap((q) =>
+          q.assets.filter((a) => a.kind !== 'FUND' && count(p, a.kind as Sector) >= count(q, a.kind as Sector)));
         if (targets.length) out.push({ ...base, params: { targetCardId: pick(targets).id } });
       } else if (c.effect === 'QUICK_BUY') {
         const others = s.open.filter((o) => o.id !== c.id).sort((a, b) => a.fee - b.fee);
@@ -52,8 +56,8 @@ export function botCandidates(s: GameState, pid: number, st: Difficulty): Action
     return out;
   }
 
-  const kinds = [...new Set(p.assets.map((a) => a.kind))];
-  const total = (k: string) => p.assets.filter((a) => a.kind === k).reduce((t, a) => t + (k === 'FUND' ? fundPrice(s) : s.price[k as Sector] * (a.split ? 2 : 1)), 0);
+  const kinds = [...new Set(p.assets.map((a) => a.kind))].filter((k) => k !== 'FUND'); // Reksa Dana hanya cair di akhir
+  const total = (k: string) => p.assets.filter((a) => a.kind === k).reduce((t, a) => t + s.price[k as Sector] * (a.split ? 2 : 1), 0);
   const final = s.round >= CONFIG.rounds;
   const eligible = st === 'smart' ? kinds.filter((k) => final || val(k) >= 6) : kinds.filter(() => r() < 0.4);
   if (!eligible.length) return [{ type: 'SELL', cardIds: [] }];
@@ -63,7 +67,7 @@ export function botCandidates(s: GameState, pid: number, st: Difficulty): Action
 
 /** Aksi aman untuk auto-pass / timeout / skip host. Selalu valid untuk actor saat ini. */
 export function autoAction(s: GameState, pid: number): Action {
-  if (s.phase === 'BIDDING') return { type: 'BID', amount: 0 };
+  if (s.phase === 'BIDDING') return { type: 'BID', amount: Math.min(CONFIG.minBid, s.players[pid].coins) };
   if (s.phase === 'ACTION') {
     const p = s.players[pid];
     const aff = s.open.filter((c) => c.fee <= p.coins).sort((a, b) => a.fee - b.fee);

@@ -29,8 +29,11 @@ export const CONFIG = {
   quickBuyTake: 2,
   rumorMoves: 2,
   infoBonus: 2,
-  loan: 5,
-  debtPenalty: 7,
+  /** Kartu Utang: pinjam 10 koin, dipotong 13 saat pelunasan akhir. */
+  loan: 10,
+  debtPenalty: 13,
+  /** Bid minimal 1 koin (0 hanya bila pemain benar-benar tidak punya koin). */
+  minBid: 1,
 
   // ---- ASSUMPTION (rulebook tidak menyebut angka pastinya) ----
   /** fee -> jumlah kartu. Total harus 60. */

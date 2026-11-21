@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Action, GameView, SeatInfo } from '@/lib/client';
 import type { Kind, Sector } from '@/config';
-import { SECTORS } from '@/config';
+import { CONFIG, SECTORS } from '@/config';
 import { EFFECT_META, KIND_META, PHASE_META, SECTOR_META } from '@/lib/meta';
 import { sfx } from '@/lib/sound';
 import { IconCheck, IconCoin, IconDown, IconEye, IconMinus, IconPlus, IconSkip, IconUp, IconX, KindIcon } from './icons';
@@ -27,13 +27,14 @@ export function ActionPanel({ view, you, seats, sel, setSel, sellKind, sellIds, 
 
   const [bid, setBid] = useState(1);
   const [mode, setMode] = useState<'save' | 'effect' | null>(null);
-  const [rumor, setRumor] = useState<{ sector: Sector; delta: 1 | -1 }[]>([]);
+  const [rumor, setRumor] = useState<{ sector: Sector; delta: 1 | -1 | 2 | -2 }[]>([]);
   const [infoSecs, setInfoSecs] = useState<Sector[]>([]);
   const [target, setTarget] = useState<number | null>(null);
   const [quick, setQuick] = useState<number[]>([]);
+  const minBid = Math.min(CONFIG.minBid, myCoins);
 
   useEffect(() => { setMode(null); setRumor([]); setInfoSecs([]); setTarget(null); setQuick([]); }, [sel]);
-  useEffect(() => { setBid((b) => Math.min(b, myCoins)); }, [myCoins]);
+  useEffect(() => { setBid((b) => Math.max(minBid, Math.min(b, myCoins))); }, [myCoins, minBid]);
 
   const card = sel !== null ? view.open.find((c) => c.id === sel) ?? null : null;
   const isMyAction = view.phase === 'ACTION' && view.turn === you;
@@ -45,9 +46,13 @@ export function ActionPanel({ view, you, seats, sel, setSel, sellKind, sellIds, 
 
   const sellGroups = useMemo(() => {
     const m = new Map<Kind, typeof me.assets>();
-    for (const a of me.assets) m.set(a.kind, [...(m.get(a.kind) ?? []), a]);
+    for (const a of me.assets) {
+      if (a.kind === 'FUND') continue; // Reksa Dana hanya dicairkan di akhir permainan
+      m.set(a.kind, [...(m.get(a.kind) ?? []), a]);
+    }
     return [...m.entries()];
   }, [me.assets]);
+  const hasFund = me.assets.some((a) => a.kind === 'FUND');
 
   const submit = (a: Action, sound: () => void) => {
     sound();
@@ -70,14 +75,14 @@ export function ActionPanel({ view, you, seats, sel, setSel, sellKind, sellIds, 
         </div>
       );
     }
-    const quickVals = [0, 1, 2, 3, 5].filter((v) => v <= myCoins);
+    const quickVals = [1, 2, 3, 5].filter((v) => v >= minBid && v <= myCoins);
     return (
       <div className="panel action-panel paper-scope">
         <div className="ap-title"><IconCoin />Fase Bidding — pasang bid tertutup</div>
-        <p className="ap-desc">Bid tertinggi dapat urutan jalan 1. Bid dibayar ke bank. Seri dimenangkan nomor urutan lama yang lebih kecil.</p>
+        <p className="ap-desc">Bid minimal 1 koin. Tertinggi dapat urutan jalan 1. Bid dibayar ke bank. Seri dimenangkan nomor urutan lama yang lebih kecil.</p>
         <div className="bid-row">
-          <button className="icon-btn" aria-label="Kurangi bid" disabled={bid <= 0} onClick={() => { setBid(Math.max(0, bid - 1)); sfx.tap(); }}><IconMinus /></button>
-          <input type="range" className="bid-slider" min={0} max={myCoins} value={bid}
+          <button className="icon-btn" aria-label="Kurangi bid" disabled={bid <= minBid} onClick={() => { setBid(Math.max(minBid, bid - 1)); sfx.tap(); }}><IconMinus /></button>
+          <input type="range" className="bid-slider" min={minBid} max={myCoins} value={bid}
             style={{ '--fill': `${myCoins ? (bid / myCoins) * 100 : 0}%` } as React.CSSProperties}
             onChange={(e) => setBid(Number(e.target.value))} aria-label="Jumlah bid" />
           <button className="icon-btn" aria-label="Tambah bid" disabled={bid >= myCoins} onClick={() => { setBid(Math.min(myCoins, bid + 1)); sfx.tap(); }}><IconPlus /></button>
@@ -86,6 +91,7 @@ export function ActionPanel({ view, you, seats, sel, setSel, sellKind, sellIds, 
         <div className="ap-actions" style={{ alignItems: 'center' }}>
           <div className="quick-bids">
             {quickVals.map((v) => <button key={v} className={bid === v ? 'on' : ''} onClick={() => { setBid(v); sfx.tap(); }}>{v}</button>)}
+            {myCoins < CONFIG.minBid && <span className="chip">Tanpa koin — bid 0 (pass)</span>}
           </div>
           <div className="spacer" />
           <span className="chip chip-gold"><IconCoin size={13} />{myCoins} koin</span>
@@ -139,7 +145,12 @@ export function ActionPanel({ view, you, seats, sel, setSel, sellKind, sellIds, 
     const others = view.open.filter((c) => c.id !== card.id);
     const quickNeed = Math.min(2, others.length);
     const quickFee = quick.reduce((t, id) => t + (view.open.find((c) => c.id === id)?.fee ?? 0), 0);
-    const targets = view.players.filter((p) => p.id !== you).flatMap((p) => p.assets.filter((a) => a.kind !== 'FUND').map((a) => ({ owner: p.id, card: a })));
+    const targets = view.players.filter((p) => p.id !== you).flatMap((p) => p.assets.filter((a) => a.kind !== 'FUND').map((a) => ({
+      owner: p.id,
+      card: a,
+      need: p.assets.filter((x) => x.kind === a.kind).length,
+      have: me.assets.filter((x) => x.kind === a.kind).length,
+    })));
 
     let effectReady = false;
     let effectUI: React.ReactNode = null;
@@ -161,17 +172,25 @@ export function ActionPanel({ view, you, seats, sel, setSel, sellKind, sellIds, 
         );
       } else if (card.effect === 'RUMOR') {
         effectReady = rumor.length >= 1 && rumor.length <= 2;
+        const pushRumor = (sector: Sector, delta: 1 | -1) => {
+          sfx.tap();
+          setRumor((r) => (r.some((m) => Math.abs(m.delta) === 2) ? [{ sector, delta }] : r.length >= 2 ? r : [...r, { sector, delta }]));
+        };
         effectUI = (
           <>
-            <p className="ap-desc">Tambah 1–2 perubahan harga (±1). Klik − atau + pada sektor.</p>
+            <p className="ap-desc">Pilih ±1 di dua sektor, atau ±2 di satu sektor. Rumor tidak memicu Stock Crash / Stock Split.</p>
             <div className="sector-picks">
               {SECTORS.map((s) => (
                 <span key={s} className="spick" style={{ '--kc': SECTOR_META[s].color, cursor: 'default' } as React.CSSProperties}>
                   <KindIcon kind={s} size={14} />{SECTOR_META[s].label}
-                  <button className="icon-btn" style={{ width: 26, height: 26 }} aria-label={`${SECTOR_META[s].label} turun 1`} disabled={rumor.length >= 2}
-                    onClick={() => { sfx.tap(); setRumor((r) => [...r, { sector: s, delta: -1 }]); }}><IconDown size={12} /></button>
-                  <button className="icon-btn" style={{ width: 26, height: 26 }} aria-label={`${SECTOR_META[s].label} naik 1`} disabled={rumor.length >= 2}
-                    onClick={() => { sfx.tap(); setRumor((r) => [...r, { sector: s, delta: 1 }]); }}><IconUp size={12} /></button>
+                  <button className="icon-btn icon-sm icon-sm-text" aria-label={`${SECTOR_META[s].label} turun 2`}
+                    onClick={() => { sfx.tap(); setRumor([{ sector: s, delta: -2 }]); }}>−2</button>
+                  <button className="icon-btn icon-sm" aria-label={`${SECTOR_META[s].label} turun 1`} disabled={rumor.length >= 2}
+                    onClick={() => pushRumor(s, -1)}><IconDown size={12} /></button>
+                  <button className="icon-btn icon-sm" aria-label={`${SECTOR_META[s].label} naik 1`} disabled={rumor.length >= 2}
+                    onClick={() => pushRumor(s, 1)}><IconUp size={12} /></button>
+                  <button className="icon-btn icon-sm icon-sm-text" aria-label={`${SECTOR_META[s].label} naik 2`}
+                    onClick={() => { sfx.tap(); setRumor([{ sector: s, delta: 2 }]); }}>+2</button>
                 </span>
               ))}
             </div>
@@ -179,8 +198,8 @@ export function ActionPanel({ view, you, seats, sel, setSel, sellKind, sellIds, 
               {rumor.map((m, i) => (
                 <div className="move-item" key={i}>
                   <span style={{ color: SECTOR_META[m.sector].color, fontWeight: 600 }}>{SECTOR_META[m.sector].label}</span>
-                  <button className="chip" style={{ cursor: 'pointer' }} title="Balik arah" onClick={() => setRumor((r) => r.map((x, j) => j === i ? { ...x, delta: x.delta === 1 ? -1 : 1 } : x))}>
-                    {m.delta === 1 ? <IconUp size={12} /> : <IconDown size={12} />}{m.delta > 0 ? '+1' : '−1'}
+                  <button className="chip" style={{ cursor: 'pointer' }} title="Balik arah" onClick={() => setRumor((r) => r.map((x, j) => j === i ? { ...x, delta: (-x.delta) as 1 | -1 | 2 | -2 } : x))}>
+                    {m.delta > 0 ? <IconUp size={12} /> : <IconDown size={12} />}{m.delta > 0 ? `+${m.delta}` : `−${Math.abs(m.delta)}`}
                   </button>
                   <button className="rm" aria-label="Hapus perubahan" onClick={() => setRumor((r) => r.filter((_, j) => j !== i))}><IconX size={14} /></button>
                 </div>
@@ -209,16 +228,19 @@ export function ActionPanel({ view, you, seats, sel, setSel, sellKind, sellIds, 
           <p className="ap-desc">Tidak ada saham lawan yang bisa diakuisisi. Simpan kartu ini sebagai aset.</p>
         ) : (
           <>
-            <p className="ap-desc">Pilih 1 saham lawan. Biaya = floor(harga ÷ 2), dibayar ke pemiliknya. Split token ikut pindah.</p>
+            <p className="ap-desc">Pilih 1 saham lawan. Biaya floor(harga ÷ 2) dibayar ke Bank. Sahammu di sektor itu harus ≥ milik target. Split token ikut pindah.</p>
             <div className="target-list">
-              {targets.map(({ owner, card: t }) => (
-                <button key={t.id} className={`target-row ${target === t.id ? 'on' : ''}`} onClick={() => { sfx.tap(); setTarget(t.id); }}>
-                  <KindIcon kind={t.kind} size={16} />
-                  <span style={{ fontWeight: 600, fontSize: 13 }}>{KIND_META[t.kind].label}{t.split && <span className="chip chip-violet" style={{ marginLeft: 6 }}>×2</span>}</span>
-                  <span style={{ color: 'var(--faint)', fontSize: 12 }}>milik {nameOf(owner)}</span>
-                  <span className="cost"><IconCoin size={13} />{Math.floor(view.price[t.kind as Sector] / 2)}</span>
-                </button>
-              ))}
+              {targets.map(({ owner, card: t, need, have }) => {
+                const ok = have >= need;
+                return (
+                  <button key={t.id} className={`target-row ${target === t.id ? 'on' : ''}`} disabled={!ok} onClick={() => { sfx.tap(); setTarget(t.id); }}>
+                    <KindIcon kind={t.kind} size={16} />
+                    <span style={{ fontWeight: 600, fontSize: 13 }}>{KIND_META[t.kind].label}{t.split && <span className="chip chip-violet" style={{ marginLeft: 6 }}>×2</span>}</span>
+                    <span style={{ color: 'var(--faint)', fontSize: 12 }}>milik {nameOf(owner)} · kamu {have}/{need}</span>
+                    <span className="cost"><IconCoin size={13} />{Math.floor(view.price[t.kind as Sector] / 2)}</span>
+                  </button>
+                );
+              })}
             </div>
           </>
         );
@@ -295,9 +317,9 @@ export function ActionPanel({ view, you, seats, sel, setSel, sellKind, sellIds, 
     return (
       <div className="panel action-panel paper-scope">
         <div className="ap-title"><IconCoin />Giliranmu — jual aset</div>
-        <p className="ap-desc">Maksimal 1 jenis aset per ronde, jumlah lembar bebas. Harga saham = harga × (Split ? 2 : 1).</p>
+        <p className="ap-desc">Maksimal 1 jenis aset per ronde, jumlah lembar bebas. Harga saham = harga × (Split ? 2 : 1). Reksa Dana baru dicairkan otomatis di akhir permainan.</p>
         {sellGroups.length === 0 ? (
-          <p className="ap-desc">Kamu tidak punya aset. Lewati untuk lanjut ke fase Ekonomi.</p>
+          <p className="ap-desc">{hasFund ? 'Kamu hanya punya Reksa Dana — cair otomatis di akhir. Lewati untuk lanjut ke fase Ekonomi.' : 'Kamu tidak punya aset. Lewati untuk lanjut ke fase Ekonomi.'}</p>
         ) : (
           <>
             <div className="sell-groups">
