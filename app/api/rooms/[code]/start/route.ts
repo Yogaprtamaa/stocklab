@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ cod
   try {
     const { code } = await params;
     const b = await body(req);
-    startGame(getRoom(code), b.token);
+    await startGame(await getRoom(code), b.token);
     return ok({ ok: true });
   } catch (e) { return fail(e); }
 }

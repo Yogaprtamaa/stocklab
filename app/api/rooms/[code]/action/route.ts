@@ -9,7 +9,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ cod
   try {
     const { code } = await params;
     const b = await body(req);
-    doAction(getRoom(code), b.token, b.action as Action);
+    await doAction(await getRoom(code), b.token, b.action as Action);
     return ok({ ok: true });
   } catch (e) { return fail(e); }
 }

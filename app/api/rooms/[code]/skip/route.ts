@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ cod
   try {
     const { code } = await params;
     const b = await body(req);
-    skipTurn(getRoom(code), b.token);
+    await skipTurn(await getRoom(code), b.token);
     return ok({ ok: true });
   } catch (e) { return fail(e); }
 }

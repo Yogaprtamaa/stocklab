@@ -7,8 +7,8 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest, { params }: { params: Promise<{ code: string }> }) {
   try {
     const { code } = await params;
-    const room = getRoom(code);
+    const room = await getRoom(code);
     const token = req.nextUrl.searchParams.get('token');
-    return ok(statePayload(room, token));
+    return ok(await statePayload(room, token));
   } catch (e) { return fail(e); }
 }

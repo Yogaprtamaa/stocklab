@@ -8,9 +8,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ cod
   try {
     const { code } = await params;
     const b = await body(req);
-    const room = getRoom(code);
+    const room = await getRoom(code);
     if (!room.state || room.state.phase !== 'ENDED') throw new ApiError(400, 'Game belum selesai.');
-    startGame(room, b.token);
+    await startGame(room, b.token);
     return ok({ ok: true });
   } catch (e) { return fail(e); }
 }

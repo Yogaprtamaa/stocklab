@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ cod
   try {
     const { code } = await params;
     const b = await body(req);
-    const { seat } = joinRoom(code, String(b.name ?? ''));
+    const { seat } = await joinRoom(code, String(b.name ?? ''));
     return ok({ token: seat.token, pid: seat.pid, name: seat.name });
   } catch (e) { return fail(e); }
 }
